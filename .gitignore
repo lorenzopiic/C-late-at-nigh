@@ -1,0 +1,43 @@
+# --- Compilazione e Binari ---
+# Esclude tutti i file oggetto (output della fase di compilazione)
+*.o
+*.obj
+
+# Esclude librerie statiche e dinamiche
+*.a
+*.lib
+*.so
+*.dll
+*.dylib
+
+# Esclude gli eseguibili (spesso senza estensione su Linux)
+# Se i tuoi programmi hanno nomi specifici, puoi elencarli o 
+# usare pattern se li compili in una cartella specifica (es. bin/)
+bin/
+*.out
+*.exe
+
+# --- Build Systems ---
+# Se userai CMake in futuro
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+Makefile
+# Nota: Il Makefile scritto a mano va caricato, ma quelli generati 
+# da strumenti come Autotools o CMake no.
+
+# --- Log e Debug ---
+*.log
+*.dSYM/
+*.suo
+*.pdb
+*.ilk
+
+# --- OS & IDE (Specifici dell'ambiente) ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~
