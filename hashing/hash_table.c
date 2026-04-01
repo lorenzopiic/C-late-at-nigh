@@ -8,23 +8,24 @@
 int main(void)
 {
 
-    hashtable *ht = create_table();
+    hashtable* ht = create_table();
     delete_hash_table(ht);
 }
 
-static record *create_record(const char *k, const char *v)
+static
+record* create_record(const char *k, const char *v)
 {
-    record *newPtr = malloc(sizeof(*newPtr));
+    record* newPtr = malloc(sizeof(*newPtr));
     if (newPtr == NULL) {
-	return NULL;
+		return NULL;
     }
     newPtr->key = malloc(strlen(k) + 1);
     newPtr->value = malloc(strlen(v) + 1);
 
-    if (newPtr->key == NULL || newPtr->value) {
-	free(newPtr->key);
-	free(newPtr->value);
-	free(newPtr);
+    if (newPtr->key == NULL || newPtr->value == NULL) {
+		free(newPtr->key);
+		free(newPtr->value);
+		free(newPtr);
 	return NULL;
     }
     strcpy(newPtr->key, k);
@@ -33,21 +34,21 @@ static record *create_record(const char *k, const char *v)
     return newPtr;
 }
 
-static hashtable *create_table()
+static
+hashtable* create_table()
 {
-    hashtable *ht = malloc(sizeof(*ht));
-    if (ht == NULL)
-	return NULL;
+    hashtable* ht = malloc(sizeof(*ht));
+    if (ht == NULL) return NULL;
     ht->capacity = 53;
     ht->count = 0;
-    ht->buckets = calloc(ht->capacity, sizeof(record *));
-    if (ht->buckets == NULL)
-	return NULL;
+    ht->buckets = calloc(ht->capacity, sizeof(record*));
+    if (ht->buckets == NULL) return NULL;
 
     return ht;
 }
 
-static void delete_record(record * rec)
+static void
+delete_record (record * rec)
 {
     free(rec->key);
     free(rec->value);
@@ -55,24 +56,27 @@ static void delete_record(record * rec)
 }
 
 
-void delete_hash_table(hashtable * ht)
+void
+delete_hash_table (hashtable * ht)
 {
     for (size_t i = 0; i < ht->capacity; i++) {
-	record *temp = ht->buckets[i];
-	if (temp != NULL) {
-	    delete_record(temp);
-	}
-    }
+		record* temp = ht->buckets[i];
+		if (temp != NULL) {
+	    	delete_record(temp);
+			}
+    	}
     free(ht->buckets);
     free(ht);
 }
 
-unsigned long hash(const char *s, const int a, const int m)
+unsigned long
+hash (const char *s, const int a, const int m)
 {
     unsigned long hash = 0;
-    for (size_t i = 0; i < strlen(s); i++) {
-	hash += pow(a, strlen(s) - (i + 1)) * s[i];
-	hash = hash % m;
+    
+	for (size_t i=0;i<strlen(s);i++){
+		hash += pow(a, strlen(s) - (i + 1)) * s[i];
+		hash = hash % m;
     }
     return hash;
 }
@@ -85,34 +89,60 @@ get_hash(const char *s, const int num_buckets, const int attempt)
     return (hash_a + (attempt * (hash_b + 1))) % num_buckets;
 }
 
-void insert(hashtable * ht, const char *key, const char *value)
+void
+insert (hashtable * ht, const char *key, const char *value)
 {
-    record *newPtr = create_record(key, value);
-    int index = get_hash(record->key, ht->capacity, 0);
-    record *current_record = ht->buckets[index];
+    record* newPtr = create_record(key, value);
+	if(newPtr == NULL) exit(-1);
+
+    int index = get_hash(newPtr->key, ht->capacity, 0);
+    record* currentPtr = ht->buckets[index];
     int i = 1;
-    while (current_record != NULL) {
-	index = get_hash(record->key, ht->capacity, i);
-	current_record = ht->buckets[index];
-	i++;
-    }
+    
+	while (currentPtr != NULL) {
+		index = get_hash(newPtr->key, ht->capacity, i);
+		currentPtr = ht->buckets[index];
+		i++;
+	}
     ht->buckets[index] = newPtr;
     ht->count++;
 }
 
-char *search(hashtable * ht, const char *key)
+char* search(hashtable * ht, const char *key)
 {
     int index = get_hash(key, ht->capacity, 0);
-    record *record = ht->buckets[index];
+    record* record = ht->buckets[index];
     int i = 1;
 
-    while (record != NULL) {
-	if (strcmp(record->key, key) == 0) {
-	    return record->value;
-	}
-	index = get_hash(key, ht->capacity, i);
-	item = ht->items[index];
-	i++;
+    while (record != NULL && record != &HT_DELETED_RECORD) {
+		if (strcmp(record->key, key) == 0) {
+	    	return record->value;
+		}
+		index = get_hash(key, ht->capacity, i);
+		record = ht->buckets[index];
+		i++;
     }
-    return NULL;
+   return NULL;
+}
+
+static record HT_DELETED_RECORD;
+
+void 
+delete (hashtable* ht, const char* key)
+{
+	int index = get_hash(key, ht->capacity, 0);
+	record* record = ht->buckets[index];
+	int i=1;
+	while(record != NULL){
+		if(record != &HT_DELETED_RECORD){
+			if(strcmp(record->key,key) == 0){
+				delete_record(record);
+				ht->buckets[index] = &HT_DELETED_RECORD; 
+			}
+		}	
+		index = get_hash(key,ht->capacity,i);
+		record = ht->buckets[index];
+		i++;
+	}
+	ht->count--;
 }
