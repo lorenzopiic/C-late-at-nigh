@@ -88,9 +88,10 @@ void insert(listnode** sPtr, char value){
 	if(previousPtr == NULL){
 		newPtr->nextPtr = *sPtr;
 		*sPtr = newPtr;
-	}	
-
-
+	} else {
+   		previousPtr->nextPtr = newPtr; 
+		newPtr->nextPtr = currentPtr;
+		}
 	} else {
 		perror("Malloc error...");
    		return NULL;
