@@ -7,6 +7,8 @@ typedef struct listNode {
 }listnode;
 
 void insert(listnode** sPtr, char value);
+char delete(listnode** sPtr, char value);
+void printList(listnode** sPtr);
 
 int main(void)
 {
@@ -72,7 +74,8 @@ void instructions(void)
 }
 
 	
-void insert(listnode** sPtr, char value){
+void insert(listnode** sPtr, char value)
+{
 	listnode* newPtr = malloc(sizeof(*newPtr));
 	if(newPtr != NULL){
 		newPtr->data = value; 
@@ -96,6 +99,22 @@ void insert(listnode** sPtr, char value){
 		perror("Malloc error...");
    		return NULL;
 	}
+}
+
+char delete(listnode** sPtr, char value)
+{
+	if(value == (*sPtr)->data){
+		listnode* tempPtr = *sPtr;
+		*sPtr = (*sPtr)-> nextPtr;
+	   	free(tempPtr);
+		return value;	
+	}
+	listnode* previousPtr = *sPtr;
+	listnode* currentPtr = 
+
+
+
+
 
 
 }
