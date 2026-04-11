@@ -1,5 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
+#define SIZE 10000
 
 typedef struct listNode {
 	char data;
@@ -8,28 +10,33 @@ typedef struct listNode {
 
 void insert(listnode** sPtr, char value);
 char delete(listnode** sPtr, char value);
-void printList(listnode** sPtr);
-
+int isEmpty(listnode*sPtr);
+void printList(listnode* sPtr);
+void instructions(void);
 int main(void)
 {
     listnode *startPtr = NULL;
     char item = '0';
 
     instructions();
-    printf(">>>");
+    printf(">>> ");
     int choice = 0;
     fscanf(stdin, "%d", &choice);
-
-    while (choice != 3) {
+	
+	if (choice != 1 && choice != 2){
+		fprintf(stderr,"Invalid choice...\n");
+   		return 1; 
+	}
+	while (choice != 3) {
         switch (choice) {
         case 1:
-            printf("Enter a charcter to isert >>> ");
+            printf("Enter a character to isert >>> ");
             char buf[SIZE];
-            scanf(" %s", buf);
+            scanf("%s", buf);
             if(strlen(buf) != 1){
 				fprintf(stderr,"Error >>> Enter just one char at a time...\n");
                 break;
-                }else{
+                } else {
 					item = buf[0];
                 }
 				insert(&startPtr, item);
@@ -56,7 +63,7 @@ int main(void)
             instructions();
             break;
         }
-        printf(">>>");
+        printf(">>> ");
         fscanf(stdin, "\n%d", &choice);
     }
     puts("Program ended!");
@@ -96,8 +103,7 @@ void insert(listnode** sPtr, char value)
 		newPtr->nextPtr = currentPtr;
 		}
 	} else {
-		perror("Malloc error...");
-   		return NULL;
+		perror("Error >>> ");
 	}
 }
 
@@ -108,13 +114,42 @@ char delete(listnode** sPtr, char value)
 		*sPtr = (*sPtr)-> nextPtr;
 	   	free(tempPtr);
 		return value;	
-	}
+	} else {
 	listnode* previousPtr = *sPtr;
-	listnode* currentPtr = 
+	listnode* currentPtr = (*sPtr)->nextPtr; 
 
+	while(currentPtr != NULL && currentPtr->data != value){
+		previousPtr = currentPtr; 
+		currentPtr = currentPtr->nextPtr; 
+	}
+	/* check if the element was found or not*/
+	if(currentPtr != NULL){
+		listnode* tempPtr = currentPtr; 
+		(*previousPtr).nextPtr = (*currentPtr).nextPtr;	
+		free(tempPtr);
+		return value;
+		}
+	}
+	return '\0';
+}
 
-
-
-
+int isEmpty(listnode* sPtr){
+	return sPtr == NULL; 
 
 }
+
+void printList(listnode* sPtr){
+	
+	if(isEmpty(sPtr)){
+		puts("The fcking list is empty..."); 	
+	} else {
+		while(sPtr != NULL){
+			printf("%c >>> ", sPtr->data); 
+			sPtr = sPtr->nextPtr;
+		}
+		puts("NULL \n"); 
+	}
+}
+
+
+
