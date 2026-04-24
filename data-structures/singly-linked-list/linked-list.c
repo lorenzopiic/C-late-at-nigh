@@ -23,7 +23,7 @@ int main(void)
     int choice = 0;
     fscanf(stdin, "%d", &choice);
 	
-	if (choice != 1 && choice != 2){
+	if (choice != 1 && choice != 2) {
 		fprintf(stderr,"Invalid choice...\n");
    		return 1; 
 	}
@@ -65,6 +65,12 @@ int main(void)
         }
         printf(">>> ");
         fscanf(stdin, "\n%d", &choice);
+		while(choice != 1 && choice != 2) {
+		fprintf(stderr,"Invalid choice...\n");
+        printf(">>> ");
+        fscanf(stdin, "\n%d", &choice);
+		}
+   		return 1; 
     }
     puts("Program ended!");
     
