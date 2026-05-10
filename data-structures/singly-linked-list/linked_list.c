@@ -1,6 +1,8 @@
+/* Based on the implementation of the book "C How to Program". All rights deserved to the authors */
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<stdbool.h>
 #define SIZE 10000
 
 typedef struct listNode {
@@ -13,22 +15,25 @@ char delete(listnode** sPtr, char value);
 int isEmpty(listnode*sPtr);
 void printList(listnode* sPtr);
 void instructions(void);
+void clean_buffer(void);
+bool check_input(int* target);
 int main(void)
 {
     listnode *startPtr = NULL;
     char item = '0';
-
-    instructions();
+	int choice; 
+    
+	instructions();
     printf(">>> ");
-    int choice = 0;
-    fscanf(stdin, "%d", &choice);
 	
-	if (choice != 1 && choice != 2) {
-		fprintf(stderr,"Invalid choice...\n");
-   		return 1; 
-	}
-	while (choice != 3) {
-        switch (choice) {
+	while(1){
+		if(!check_input(&choice)){
+			fprintf(stderr,"Please, enter a number >>> ");
+		   	continue;	
+		}
+	  
+	if(choice == 3 ) { break; }	
+      switch (choice) {
         case 1:
             printf("Enter a character to isert >>> ");
             char buf[SIZE];
@@ -63,14 +68,8 @@ int main(void)
             instructions();
             break;
         }
-        printf(">>> ");
-        fscanf(stdin, "\n%d", &choice);
-		while(choice != 1 && choice != 2) {
-		fprintf(stderr,"Invalid choice...\n");
-        printf(">>> ");
-        fscanf(stdin, "\n%d", &choice);
-		}
-   		return 1; 
+	  	fprintf(stdout,"Insert new choice >>> ");
+	   	fflush(stdout);	
     }
     puts("Program ended!");
     
@@ -86,6 +85,20 @@ void instructions(void)
     printf("3 to end the program\n");
 }
 
+void clean_buffer(void){
+	int c;
+ 	while((c = getchar())!= '\n' && c != EOF);  
+}
+
+bool check_input(int *target) {
+    int check = fscanf(stdin, "%d", target);
+    if (check == 1) {
+        return true;
+    } else {
+        clean_buffer();
+        return false;
+    }
+}
 	
 void insert(listnode** sPtr, char value)
 {
