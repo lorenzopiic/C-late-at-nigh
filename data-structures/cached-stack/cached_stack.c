@@ -87,7 +87,9 @@ void push(Stack* stackPtr, type_t item){
 		newNode = NULL; 
 		return;
 	}
+}
+
+void pop() {
 
 
-
-}	
+}
