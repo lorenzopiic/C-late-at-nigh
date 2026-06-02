@@ -1,4 +1,4 @@
-/* Implementation taken from the Deitel, ALL RIGHTS DESERVED TO THE AUTHORS */
+/* Implementation inspired by the Deitel, ALL RIGHTS DESERVED TO THE AUTHORS */
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -36,58 +36,40 @@ void insertNode(node_t** rootPtr, int value) {
 	 * otherwise, we have to allocate the memory*/
 	
 	*rootPtr = malloc(sizeof(*(*rootPtr)));
-	if(rootPtr != NULL){
+	if(rootPtr != NULL) {
 		(*rootPtr)->data = value; 
 		(*rootPtr)->leftPtr = NULL; 
 		(*rootPtr)->rightPtr = NULL; 
 		} else {
 			perror("Allocation error...");
-			exit(-1);
+			exit(EXIT_FAILURE);
 		}
+		return;
 	 } else { // rootPtr already exist
 	 	node_t* newNode = malloc(sizeof(*newNode));
 		if(newNode != NULL) {
 			newNode->data = value;
-			
+			newNode->rightPtr = NULL; 
+			newNode->leftPtr = NULL; 
+
 			node_t* cp = *rootPtr; 	// cp = current pointer 
-			node_t* pp = NULL; 		// pp = previous pointer
+			node_t* pp = NULL; 		// pp = parent pointer
 			
-			if(value > cp->data ){
-				while(value > cp->data) {
-					pp = cp; 
-					cp = cp->rightPtr; 
-				}
-				if(value == cp->data){ return; }
-				if(cp->rightPtr == NULL) {
-					cp->rightPtr == newNode;
-					newNode->rightPtr = NULL;
-					newNode->leftPtr = NULL;
-				} else {
-					newNode->rightPtr = cp->rightPtr;
-					newNode->leftPtr = NULL; 
-					cp->rightPtr == newNode;	
-				}
-			} else { //value <
-				while(value < cp->data){
-					pp = cp; 
-					cp = cp->leftPtr; 
-				}
-				if(value == cp->data) { return; }
-				if(cp->leftPtr == NULL) {
-					cp->leftPtr = NULL;
-					newNode->rightPtr = NULL;
-					newNode->leftPtr = NULL;
-				} else {
-					newNode->leftPtr = cp->leftPtr;
-					newNode->leftPtr = NULL; 
-					cp->leftPtr == newNode;	
-				}
+			while(cp != NULL){
+				pp = cp; 
+				if(cp->data == value){ return; }
+
+				if(value > cp->data){ cp = cp->rightPtr; }	
+				else { cp = cp->leftPtr; }
 			}
-		
-		} else { 
+		if(value > pp->data){
+			pp->rightPtr = newNode; 
+		}	else { pp->leftPtr = newNode; }
+
+		} else {
 			perror("Allocation error...");
-			exit(-1);
-		}	
+			exit(EXIT_FAILURE);
+
 	}
 }
 void in_order(node_t** treePtr);
