@@ -1,11 +1,6 @@
-/* Implemenation of a generic "cached" stack data structure
- * to studying the so called "tagged union" tecnique.
- *
- * (C) lorenzopiic 2026                                   */
-
-
-
-
+/* Implemenation of a generic "cached" stack data structure. 
+ * For fun and for stydying the "tagged union" tecnique.
+ * Copyright (C) Lorenzo Tomasello 2026                      */
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -89,7 +84,7 @@ void push(Stack* stackPtr, type_t item){
 	}
 }
 
-void pop() {
+void pop(){
 
 
 }
