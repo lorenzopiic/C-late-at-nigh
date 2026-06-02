@@ -36,6 +36,11 @@ typedef struct Stack {
 	size_t nodes_counter;
 }Stack;
 
+typedef struct Cache {
+	stacknode* head; 
+	size_t nodes_counter;
+}Cache;
+
 //======================================//
 
 			
@@ -84,7 +89,28 @@ void push(Stack* stackPtr, type_t item){
 	}
 }
 
-void pop(){
-
-
+void pop(Stack* stackPtr, Cache* cachePtr){
+	if(stackPtr->head == NULL){
+	  	fprintf(stderr,"Stack is empty...\n"); 
+		exit(EXIT_FAILURE); 
+	}
+	stacknode* temp = stackPtr->head;
+	
+	switch(stackPtr->head->value.tag){
+		case 0: 
+		case 1: 
+		case 2: 
+		case 3:
+			stackPtr->head = stackPtr->head->nextNode;
+			free(temp);
+			temp = NULL; 
+			break;
+		case 4:
+			stackPtr->head = stackPtr->head->nextNode;
+			free(temp->value.type.string);
+			temp->value.type.string = NULL;
+			free(temp);
+			temp = NULL; 
+			break;		
+	}
 }
