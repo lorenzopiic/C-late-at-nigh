@@ -3,7 +3,7 @@
 #include<time.h>
 int* randomBuild(int argc,char**argv);
 void mergesort(int* arr, int begin, int end);
-void merge(int *arr, size_t begin size_t middle,size_t end);
+void merge(int *arr, size_t begin,size_t middle,size_t end);
 int main(int argc, char**argv)
 {
 	srand(time(NULL));
@@ -12,7 +12,7 @@ int main(int argc, char**argv)
 		return -1; 
 	}
 	
-	mergesort(arr,0,atoi(argv[1]));
+//	mergesort(arr,0,atoi(argv[1]));
 	return 0; 
 }
 int* randomBuild(int argc,char**argv){
@@ -39,8 +39,10 @@ int* randomBuild(int argc,char**argv){
 
 void mergesort(int* arr, int begin, int end)
 {
-	if(begin>= end)
-		return; 
+	if(begin>=end){ return; }
+	//	0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 
+	//
+	
 	size_t middle =(begin+end) / 2; 
 	
 	printf("%d\n", arr[middle]);
@@ -50,7 +52,7 @@ void mergesort(int* arr, int begin, int end)
 
 	merge(arr,begin,middle,end);
 }
-void merge(int *arr, size_t begin size_t middle,size_t end)
+void merge(int *arr, size_t begin,size_t middle,size_t end)
 {
 	size_t left_size = middle-begin+1; 
 	size_t right_size = end - middle; 

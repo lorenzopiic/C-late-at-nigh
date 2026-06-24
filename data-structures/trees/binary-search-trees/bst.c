@@ -6,6 +6,7 @@
 
 typedef struct treeNode {
    	int data;	
+	struct treeNode* parentPtr; 
 	struct treeNode* leftPtr;
 	struct treeNode* rightPtr; 
 }node_t;
@@ -30,6 +31,8 @@ int main(void){
 	return 0; 
 
 }
+
+
 void insertNode(node_t** rootPtr, int value) {
 	if(rootPtr == NULL){ 
 	/* Checking if the root node has already been allocated...
@@ -69,11 +72,24 @@ void insertNode(node_t** rootPtr, int value) {
 		} else {
 			perror("Allocation error...");
 			exit(EXIT_FAILURE);
-
 	}
 }
-void in_order(node_t** treePtr);
-void pre_order(node_t** treePtr);
+void pre_order(node_t* treePtr){
+	if(treePtr == NULL){
+		fprintf(stderr,"The BST is empty...\n");
+   		return NULL;
+	}
+	node_t* cp = *treePtr;
+	int counter = 0;
+	while(cp != NULL){
+		counter++; 
+		fprintf(stdout,"%d ", cp->data);
+		if(counter % 10 == 0){ puts(); }
+		pre_order(cp->leftPtr); 
+		pre_order(cp->rightPtr); 
+	}
+}
+void in_order(node_t** treePtr){}
 void post_order(node_t** treePtr);
 
 
