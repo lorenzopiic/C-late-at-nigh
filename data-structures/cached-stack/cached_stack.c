@@ -1,5 +1,5 @@
 /* Implemenation of a generic "cached" stack data structure. 
- * For fun and for stydying the "tagged union" tecnique.
+ * For fun and for stydying the "tagged union" technique.
  * Copyright (C) Lorenzo Tomasello 2026                      */
 #include<stdio.h>
 #include<stdlib.h>
@@ -37,8 +37,8 @@ typedef struct Stack {
 }Stack;
 
 typedef struct Cache {
-	stacknode* head;
-   	stacknode* tail; 	
+	stacknode* top;
+   	stacknode* bottom; 	
 	size_t nodes_counter;
 }Cache;
 
@@ -48,7 +48,10 @@ typedef struct Cache {
 void push(Stack* stackPtr, type_t value);
 void pop(Stack* stackPtr, Cache* cachePtr);
 
+void push_back(Cache* cachePtr,type_t item);
 void manage_cache_fullness(Cache* cachePtr,type_t item); 
+void set_cache_bottom(Cache* cachePtr);
+
 
 //======================================//
 int main(void) {
@@ -105,8 +108,7 @@ void pop(Stack* stackPtr, Cache* cachePtr){
 	if(stackPtr->head == NULL){
 	  	fprintf(stderr,"Stack is empty...\n"); 
 		exit(EXIT_FAILURE); 
-	}
-	stacknode* temp = stackPtr->head;
+	}	stacknode* temp = stackPtr->head;
 	if(cachePtr->nodes_counter < CACHESIZE){
 		push_back(cachePtr, stackPtr->head->value);
 	}else{
@@ -159,14 +161,16 @@ void push_back(Cache* cachePtr,type_t item){
 		   	break; 	   
 		} // end Switch // 
 		if(cachePtr == NULL){
-			cachePtr->head =  newNode;
-			cachePtr->head->nextNode = NULL; 
+			cachePtr->top = newNode;
+			cachePtr->bottom = newNode; 
+			cachePtr->top->nextNode = NULL; 
+			cachePtr->bottom->nextNode = NULL; 
 			cachePtr->nodes_counter++;	
 			return;
 		}
-		newNode->nextNode = cachePtr->head;
-	   	cachePtr->head = newNode; 		
-		cachePtr->nodes_counter++; 
+		newNode->nextNode = cachePtr->top;
+	   	cachePtr->top = newNode; 		
+		cachePtr->nodes_counter++;
 	} else {
 		perror("Allocation Error...");
 		newNode = NULL; 
@@ -174,8 +178,8 @@ void push_back(Cache* cachePtr,type_t item){
 	}
 }
 
-manage_cache_fullness(Cache* cachePtr,type_t item){
-		fprintf(stdout,"Warning! The cache memory is full!\n",
+void manage_cache_fullness(Cache* cachePtr,type_t item){
+		printf("Warning! The cache memory is full!\n",
 				       "Using it will override the last pushed information\n",
 					   "Do you want to use it anyway?\n",
 					   "1 to push\n2 to avoid\nEnter your choice >>> ");
@@ -186,18 +190,41 @@ manage_cache_fullness(Cache* cachePtr,type_t item){
 			fprintf(stderr,"Invalid choice!");
 		   	fprintf(stdout,"Enter a valid choice >>> "); 	
 			scanf("%hu", &choice);
-		}
-	} else {
+		 }
+		} else {
 		if(choice == 1){
-			push_back(cachePtr, item);
-			
-			show_cache_tail(cachePtr); 	
-		} else{
-			fprintf(""); 
-		}	
+		   stacknode* del = cachePtr->bottom;
+		   switch(del->value.tag){
+			   case 0: 
+			   case 1:
+			   case 2: 
+			   case 3:
+			       break;
+			   case 4:
+				   free(del->value.type.string);
+			       del->value.type.string = NULL; 
+			       break;		
+			}
+		free(del);
+		del = NULL;
+		cachePtr->nodes_counter--;
+		set_cache_bottom(cachePtr); 	
+	} else {
+		fprintf(stdout,"Ok the cache will remain the same...\n");
 	}
 }
 
-show_cache_tail(Cache* cachePtr){
+void set_cache_bottom(Cache* cachePtr){
+	stacknode* current = cachePtr->top;
+	stacknode* previous = NULL; 
 	
+	while(current != NULL){
+		previous = current; 
+		current = current->nextNode; 
+	}
+	if(previous != NULL){
+	cachePtr->bottom = previous; 
+	cachePtr->bottom->nextNode = NULL; 	
+	}
 }
+
