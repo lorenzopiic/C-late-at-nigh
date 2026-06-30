@@ -1,68 +1,105 @@
 /* Implemenation of a generic "cached" stack data structure. 
  * For fun and for stydying the "tagged union" technique.
  * Copyright (C) Lorenzo Tomasello 2026                      */
+
 #include<stdio.h>
-#include<stdlib.h>
 #include<string.h>
-#define CACHESIZE 100
-typedef enum types_tag {
-	TYPE_SHORT  = 0,
-	TYPE_CHAR   = 1,
-	TYPE_INT    = 2,
-	TYPE_DOUBLE = 3,
-	TYPE_STRING = 4
-} tags_t;
+#include"cached_stack.h"
+#include<stdlib.h>
+#include<stdbool.h>
 
-typedef union {
-	short short_num;
-	char char_num;
-	int int_num; 
-	double double_num; 	
-	char* string;
-}types;
-
-typedef struct tagged_type {
-	types type; 
-	tags_t tag;
-}type_t;
-
-typedef struct stacknode {
-  	type_t value; 
-	struct stacknode* nextNode; 
-}stacknode;
-
-typedef struct Stack {
-	stacknode* head;
-	size_t nodes_counter;
-}Stack;
-
-typedef struct Cache {
-	stacknode* top;
-   	stacknode* bottom; 	
-	size_t nodes_counter;
-}Cache;
-
-//======================================//
-
-			
-void push(Stack* stackPtr, type_t value);
-void pop(Stack* stackPtr, Cache* cachePtr);
-
-void push_back(Cache* cachePtr,type_t item);
-void manage_cache_fullness(Cache* cachePtr,type_t item); 
-void set_cache_bottom(Cache* cachePtr);
-
-
-//======================================//
 int main(void) {
-	return 0; 
+    Stack* STACK = NULL; 
+	Cache* CACHE = NULL; 
+    
+	int instructions_choice;
+	int options_choice; 
+    instructions();
+    printf(">>> ");
+	while(1){
+		if(!check_input(&instruction_choice)){
+		fprintf(stderr,"Please, enter a number >>> ");
+        continue;
+      }
+	if(choice == 3 ) { break; }
+      switch (choice) {
+        case 1:
+			options();
+			scanf("%d",&options_choice);		   		
+            type_t new = manage_option_choice(&options_choice); 
+			char buf[SIZE];
+            scanf("%s", buf);
+            if(strlen(buf) != 1){
+				fprintf(stderr,"Error >>> Enter just one char at a time...\n");
+                break;
+                } else {
+					item = buf[0];
+			}
+				insert(&startPtr, item);
+                printList(startPtr);
+           	     break;
+        case 2:
+            if (!isEmpty(startPtr)) {   // the list is not empty //
+                printf("Enter a character to be deleted >>> ");
+                fscanf(stdin, "\n%c", &item);
 
-		Stack* STACK = NULL; 
+                if (delete(&startPtr, item)) {
+                    printf("The character <%c> has been deleted\n", item);
+                    printList(startPtr);
+                } else {
+                    printf("Couldn't find the element <%c> to delete\n",
+                           item);
+                }
+            } else {            // the list is empty //
+                printf("The list in empty\n");
+            }
+            break;
+        default:
+            printf("Ivalid choice...\n");
+            instructions();
+            break;
+        }
+                fprintf(stdout,"Insert new choice >>> ");
+                fflush(stdout);
+    }
+    puts("Program ended!");
 
-			
-
+        return 0;
 }
 
+
+void instructions(void) {
+    printf("Enter your choice\n");
+    printf("1 to push an element into the stack\n");
+    printf("2 to pop an element from the stack\n");
+    printf("3 to end the program\n");
+}
+
+void options(void){
+	printf("What kind of data do you want to push?");
+	printf("1 >>> short\n2 >>> char\n3 >>> int\n4 >>> double\n 5 >>> string\n"); 
+}
+
+void clean_buffer(void){
+        int c;
+        while((c = getchar())!= '\n' && c != EOF);
+}
+
+bool check_input(int *target) {
+    int check = fscanf(stdin, "%d", target);
+    if (check == 1) {
+        return true;
+    } else {
+        clean_buffer();
+        return false;
+    }
+}
+
+type_t manage_options_choice(int* option){
+	switch()
+	
+
+}
 void push(Stack* stackPtr, type_t item){
 	stacknode* newNode = malloc(sizeof(*newNode));
 	if(newNode != NULL){
@@ -179,10 +216,10 @@ void push_back(Cache* cachePtr,type_t item){
 }
 
 void manage_cache_fullness(Cache* cachePtr,type_t item){
-		printf("Warning! The cache memory is full!\n",
-				       "Using it will override the last pushed information\n",
-					   "Do you want to use it anyway?\n",
-					   "1 to push\n2 to avoid\nEnter your choice >>> ");
+		printf("Warning! The cache memory is full!\n"
+				"Using it will override the last pushed information\n"
+				"Do you want to use it anyway?\n"
+				"1 to push\n2 to avoid\nEnter your choice >>> ");
 		unsigned short choice = 0; 
 		scanf("%hu", &choice);
 		if(choice != 1 && choice != 2){
@@ -211,6 +248,7 @@ void manage_cache_fullness(Cache* cachePtr,type_t item){
 		set_cache_bottom(cachePtr); 	
 	} else {
 		fprintf(stdout,"Ok the cache will remain the same...\n");
+		}
 	}
 }
 
@@ -224,7 +262,8 @@ void set_cache_bottom(Cache* cachePtr){
 	}
 	if(previous != NULL){
 	cachePtr->bottom = previous; 
-	cachePtr->bottom->nextNode = NULL; 	
+	cachePtr->bottom->nextNode = NULL; 
 	}
+	previous = NULL; 
+	current  = NULL; 
 }
-

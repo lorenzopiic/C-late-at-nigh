@@ -1,4 +1,5 @@
-/* Based on the implementation of the book "C How to Program". All rights deserved to the authors */
+/* Based on the implementation of the book "C How to Program".
+ * All rights deserved to the authors */
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
