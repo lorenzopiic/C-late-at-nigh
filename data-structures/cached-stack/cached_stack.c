@@ -27,40 +27,16 @@ int main(void) {
 			options();
 			scanf("%d",&options_choice);		   		
             type_t new = manage_option_choice(&options_choice); 
-			char buf[SIZE];
-            scanf("%s", buf);
-            if(strlen(buf) != 1){
-				fprintf(stderr,"Error >>> Enter just one char at a time...\n");
-                break;
-                } else {
-					item = buf[0];
-			}
-				insert(&startPtr, item);
-                printList(startPtr);
            	     break;
         case 2:
-            if (!isEmpty(startPtr)) {   // the list is not empty //
-                printf("Enter a character to be deleted >>> ");
-                fscanf(stdin, "\n%c", &item);
-
-                if (delete(&startPtr, item)) {
-                    printf("The character <%c> has been deleted\n", item);
-                    printList(startPtr);
-                } else {
-                    printf("Couldn't find the element <%c> to delete\n",
-                           item);
-                }
-            } else {            // the list is empty //
-                printf("The list in empty\n");
-            }
             break;
         default:
             printf("Ivalid choice...\n");
             instructions();
             break;
         }
-                fprintf(stdout,"Insert new choice >>> ");
-                fflush(stdout);
+             fprintf(stdout,"Insert new choice >>> ");
+            fflush(stdout);
     }
     puts("Program ended!");
 
@@ -85,7 +61,7 @@ void clean_buffer(void){
         while((c = getchar())!= '\n' && c != EOF);
 }
 
-bool check_input(int *target) {
+bool check_input(int* target){
     int check = fscanf(stdin, "%d", target);
     if (check == 1) {
         return true;
@@ -95,11 +71,49 @@ bool check_input(int *target) {
     }
 }
 
-type_t manage_options_choice(int* option){
-	switch()
-	
+type_t* manage_options_choice(int* option){
+		type_t* ret = NULL; 
+		switch(*option){
+			case 0:
+				fprintf(stdout,"Enter the short >>> ");
+				short sh = 0; 
+				fscanf(stdout,"%s",&sh); 
+				ret = allocate_short(&sh);
+			   	break;
+			case 1:	
+				fprintf(stdout,"Enter the char >>> ");
+				char ch; 
+				char buf[1000];
+            	scanf("%s", buf);
+            	if(strlen(buf) != 1){
+					while(strlen(buf) != 1){
+                     fprintf(stderr,"Error >>> Enter just one char at a time...\n");
+					 fprintf(stdout,"Enter the char >>> ");
+            		 fscanf(stdout,"%s", buf);
+					}
+				} else {
+				   	char = buf[0];
+               }
+			   ret = allocate_char(&ch);
+			   break;
+			case 2:
+				fprintf(stdout,"Enter the int >>> ");
+			   	int integer = 0;
+				fscanf(stdout,"%d",&integer);
+			   	ret = allocate_int(&integer);
+				break;
+			case 3:
+				fprintf(stdout,"Enter the int >>> ");
+				double doub; 
+				fscanf(stdout,"%lf", &doub);
+				ret = allocate_double(&doub); 	
+				break;
+			case 4:
 
 }
+	return ret; 
+}
+
 void push(Stack* stackPtr, type_t item){
 	stacknode* newNode = malloc(sizeof(*newNode));
 	if(newNode != NULL){

@@ -42,9 +42,14 @@ void instructions(void);
 void options(void); 
 void clean_buffer(void);
 bool check_input(int* target);
-			
+type_t manage_option_choice(int* option);
+
+/* Stack */
+
 void push(Stack* stackPtr, type_t value);
 void pop(Stack* stackPtr, Cache* cachePtr);
+
+/* Cache */
 
 void push_back(Cache* cachePtr,type_t item);
 void manage_cache_fullness(Cache* cachePtr,type_t item); 
