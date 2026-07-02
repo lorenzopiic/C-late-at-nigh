@@ -44,6 +44,11 @@ void clean_buffer(void);
 bool check_input(int* target);
 type_t manage_option_choice(int* option);
 
+type_t allocate_short(short* sh);
+type_t allocate_char();
+type_t allocate_int();
+type_t allocate_double(); 
+
 /* Stack */
 
 void push(Stack* stackPtr, type_t value);

@@ -114,6 +114,18 @@ type_t* manage_options_choice(int* option){
 	return ret; 
 }
 
+type_t allocate_short(short* sh){
+	
+type_t* ret = malloc(sizeof(*ret));
+if(ret != NULL){
+	ret->type = *sh; 
+	ret->tag = TYPE_SHORT; 
+} else {
+	perror("Allocation Error");
+	return NULL; 
+}	
+	return ret;  
+}
 void push(Stack* stackPtr, type_t item){
 	stacknode* newNode = malloc(sizeof(*newNode));
 	if(newNode != NULL){
