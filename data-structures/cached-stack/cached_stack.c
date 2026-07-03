@@ -4,9 +4,9 @@
 
 #include<stdio.h>
 #include<string.h>
-#include"cached_stack.h"
 #include<stdlib.h>
 #include<stdbool.h>
+#include"cached_stack.h"
 
 int main(void) {
     Stack* STACK = NULL; 
@@ -17,12 +17,12 @@ int main(void) {
     instructions();
     printf(">>> ");
 	while(1){
-		if(!check_input(&instruction_choice)){
+		if(!check_input(&instructions_choice)){
 		fprintf(stderr,"Please, enter a number >>> ");
         continue;
       }
-	if(choice == 3 ) { break; }
-      switch (choice) {
+	if(instructions_choice == 3 ) { break; }
+      switch (instructions_choice) {
         case 1:
 			options();
 			scanf("%d",&options_choice);		   		
@@ -77,7 +77,7 @@ type_t* manage_options_choice(int* option){
 			case 0:
 				fprintf(stdout,"Enter the short >>> ");
 				short sh = 0; 
-				fscanf(stdout,"%s",&sh); 
+				fscanf(stdout,"%hd",&sh); 
 				ret = allocate_short(&sh);
 			   	break;
 			case 1:	
@@ -92,7 +92,7 @@ type_t* manage_options_choice(int* option){
             		 fscanf(stdout,"%s", buf);
 					}
 				} else {
-				   	char = buf[0];
+				   	ch = buf[0];
                }
 			   ret = allocate_char(&ch);
 			   break;
@@ -110,11 +110,11 @@ type_t* manage_options_choice(int* option){
 				break;
 			case 4:
 
-}
+	}
 	return ret; 
 }
 
-type_t allocate_short(short* sh){
+type_t* allocate_short(short* sh){
 	
 type_t* ret = malloc(sizeof(*ret));
 if(ret != NULL){
@@ -126,6 +126,31 @@ if(ret != NULL){
 }	
 	return ret;  
 }
+type_t* allocate_char(char* ch){
+	type_t* ret = malloc(sizeof(*ret));
+	if(ret != NULL){
+		ret->type = *ch;
+		ret->tag = TYPE_CHAR;
+	} else {
+		perror("Allocation Error");
+		return NULL; 
+	}
+	 return ret; 
+}
+type_t* allocate_int(int* integer){
+	type_t * ret = malloc(sizeof(*ret));
+	if(ret != NULL){
+		ret->type = *integer;
+		ret->tag = TYPE_INT;
+	} else{
+		perror("Allocation error");
+		return NULL; 
+	}
+	return ret; 
+
+}
+
+
 void push(Stack* stackPtr, type_t item){
 	stacknode* newNode = malloc(sizeof(*newNode));
 	if(newNode != NULL){

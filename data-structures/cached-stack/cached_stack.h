@@ -44,10 +44,11 @@ void clean_buffer(void);
 bool check_input(int* target);
 type_t manage_option_choice(int* option);
 
-type_t allocate_short(short* sh);
-type_t allocate_char();
-type_t allocate_int();
-type_t allocate_double(); 
+type_t* allocate_short(short* sh);
+type_t* allocate_char(char* ch);
+type_t* allocate_int(int* integer);
+type_t* allocate_double(double* doub);
+type_t* allocate_string(char* string);
 
 /* Stack */
 
