@@ -109,6 +109,29 @@ type_t* manage_options_choice(int* option){
 				ret = allocate_double(&doub); 	
 				break;
 			case 4:
+				fprintf(stdout,"Enter the string >>> ");
+				size_t count = 2; // one for the first letter 
+				int c;
+				char* str = malloc(sizeof(*str) * count);
+				c = getchar();
+				str[0] = (char) c;
+			   	str[count-1] = '\0';	
+					
+				if(str != NULL){
+					while( c = getchar() ){
+						count++;
+						str = realloc(str, count);
+						str[count-2] = char(c);
+						str[count-1] = '\0';
+						if(str == NULL){
+							perror("Allocation error");
+							return NULL; 
+						}
+					}
+				
+				}
+		
+
 
 	}
 	return ret; 
@@ -147,7 +170,6 @@ type_t* allocate_int(int* integer){
 		return NULL; 
 	}
 	return ret; 
-
 }
 
 
