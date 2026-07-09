@@ -109,23 +109,8 @@ type_t* manage_options_choice(int* option){
 				ret = allocate_double(&doub); 	
 				break;
 			case 4:
-				fprintf(stdout,"Enter the string >>> ");
-				size_t count = 2; // one for the first letter 
-				int c;
-				char* str = malloc(sizeof(*str) * count);
-				c = getchar();
-				str[0] = (char) c;
-			   	str[count-1] = '\0';	
-					
-				if(str != NULL){
-					while( c = getchar() ){
-						count++;
-						str = realloc(str, count);
-						str[count-2] = char(c);
-						str[count-1] = '\0';
-						if(str == NULL){
-							perror("Allocation error");
-							return NULL; 
+				char* string;
+						
 						}
 					}
 				
@@ -172,6 +157,39 @@ type_t* allocate_int(int* integer){
 	return ret; 
 }
 
+char* manage_input(){
+	printf(stdout, "Enter the string >>> ");
+    
+    size_t capacity = 16; 
+    size_t length = 0;    
+    
+    char* str = malloc(capacity);
+    if (str == NULL) {
+        perror("Allocation error...");
+        return NULL;
+    }
+
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {
+        str[length++] = (char)c; 
+        if (length == capacity) {
+            capacity *= 2;
+            char* temp = realloc(str, capacity);
+            if (temp == NULL) {
+                perror("Reallocation error...");
+                free(str);
+                return NULL;
+            }
+            str = temp;
+        }
+    }
+    str[length] = '\0';
+    char* final_str = realloc(str, length + 1);
+    if (final_str != NULL) {
+        str = final_str;
+    }
+    return str;
+}
 
 void push(Stack* stackPtr, type_t item){
 	stacknode* newNode = malloc(sizeof(*newNode));
