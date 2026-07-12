@@ -5,7 +5,6 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
-#include<stdbool.h>
 #include"cached_stack.h"
 
 int main(void) {
@@ -14,7 +13,7 @@ int main(void) {
     
 	int instructions_choice;
 	int options_choice; 
-    instructions();
+   	main_loop_instructions();
     printf(">>> ");
 	while(1){
 		if(!check_input(&instructions_choice)){
@@ -24,9 +23,9 @@ int main(void) {
 	if(instructions_choice == 3 ) { break; }
       switch (instructions_choice) {
         case 1:
-			options();
-			scanf("%d",&options_choice);		   		
-            type_t new = manage_option_choice(&options_choice); 
+			push_options();
+			scanf("%d",&push_options_choice);		   		
+            type_t* data = manage_push_options_choice(&options_choice); 
            	     break;
         case 2:
             break;
@@ -37,7 +36,7 @@ int main(void) {
         }
              fprintf(stdout,"Insert new choice >>> ");
             fflush(stdout);
-    }
+    } // end while loop() // 
     puts("Program ended!");
 
         return 0;
@@ -51,7 +50,7 @@ void instructions(void) {
     printf("3 to end the program\n");
 }
 
-void options(void){
+void push_options(void){
 	printf("What kind of data do you want to push?");
 	printf("1 >>> short\n2 >>> char\n3 >>> int\n4 >>> double\n 5 >>> string\n"); 
 }
@@ -109,35 +108,31 @@ type_t* manage_options_choice(int* option){
 				ret = allocate_double(&doub); 	
 				break;
 			case 4:
-				char* string;
-						
-						}
-					}
-				
-				}
+				size_t string_lenght = 0;  
+				char* string = manage_string_input(&string_lenght);
+				 ret = allocate_string(string,string_lenght);
+				break; 				
+			} // end switch //
 		
-
-
-	}
 	return ret; 
 }
 
-type_t* allocate_short(short* sh){
-	
-type_t* ret = malloc(sizeof(*ret));
-if(ret != NULL){
-	ret->type = *sh; 
-	ret->tag = TYPE_SHORT; 
-} else {
-	perror("Allocation Error");
-	return NULL; 
-}	
-	return ret;  
-}
-type_t* allocate_char(char* ch){
+type_t* allocate_short(short* sh) {
 	type_t* ret = malloc(sizeof(*ret));
 	if(ret != NULL){
-		ret->type = *ch;
+		ret->type.short_num = *sh; 
+		ret->tag = TYPE_SHORT; 
+	} else {
+		perror("Allocation Error");
+		return NULL; 
+	}	
+	return ret;  
+}
+
+type_t* allocate_char(char* ch) {
+	type_t* ret = malloc(sizeof(*ret));
+	if(ret != NULL){
+		ret->type.char_num = *ch;
 		ret->tag = TYPE_CHAR;
 	} else {
 		perror("Allocation Error");
@@ -145,10 +140,11 @@ type_t* allocate_char(char* ch){
 	}
 	 return ret; 
 }
+
 type_t* allocate_int(int* integer){
 	type_t * ret = malloc(sizeof(*ret));
 	if(ret != NULL){
-		ret->type = *integer;
+		ret->type.int_num = *integer;
 		ret->tag = TYPE_INT;
 	} else{
 		perror("Allocation error");
@@ -157,8 +153,36 @@ type_t* allocate_int(int* integer){
 	return ret; 
 }
 
-char* manage_input(){
-	printf(stdout, "Enter the string >>> ");
+type_t * allocate_double(double* doub){
+	type_t * ret = malloc(sizeof(*ret));
+	if(ret != NULL){
+		ret->type.double_num = *doub;
+		ret->tag = TYPE_DOUBLE;
+	} else {
+		perror("Allocation error...");
+		return NULL;
+	}
+	return ret; 
+}
+
+type_t* allocate_string(char* src_string,size_t len){
+	type_t* ret = malloc(sizeof(*ret));
+	if(ret != NULL){
+		char* dest_string = malloc(sizeof(len));
+	   	if(dest_string != NULL){
+			strncpy(dest_string,src_string,len);
+			ret->tag = TYPE_STRING;
+			ret->type.string = dest_string;
+			} else {
+				perror("Allocation error...");
+				return NULL; 
+			}	
+		}	
+	return ret; 
+}
+
+char* manage_string_input(size_t* len){
+	fprintf(stdout, "Enter the string >>> ");
     
     size_t capacity = 16; 
     size_t length = 0;    
@@ -188,6 +212,7 @@ char* manage_input(){
     if (final_str != NULL) {
         str = final_str;
     }
+	*len = length; 
     return str;
 }
 
