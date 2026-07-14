@@ -12,7 +12,7 @@ int main(void) {
 	Cache* CACHE = NULL; 
     
 	int instructions_choice;
-	int options_choice; 
+	int push_options_choice; 
    	main_loop_instructions();
     printf(">>> ");
 	while(1){
@@ -23,15 +23,16 @@ int main(void) {
 	if(instructions_choice == 3 ) { break; }
       switch (instructions_choice) {
         case 1:
+			print_divider();
 			push_options();
 			scanf("%d",&push_options_choice);		   		
-            type_t* data = manage_push_options_choice(&options_choice); 
+            type_t* data = manage_push_options_choice(&push_options_choice); 
            	     break;
         case 2:
             break;
         default:
             printf("Ivalid choice...\n");
-            instructions();
+            main_loop_instructions();
             break;
         }
              fprintf(stdout,"Insert new choice >>> ");
@@ -43,7 +44,7 @@ int main(void) {
 }
 
 
-void instructions(void) {
+void main_loop_instructions(void) {
     printf("Enter your choice\n");
     printf("1 to push an element into the stack\n");
     printf("2 to pop an element from the stack\n");
@@ -51,10 +52,12 @@ void instructions(void) {
 }
 
 void push_options(void){
-	printf("What kind of data do you want to push?");
-	printf("1 >>> short\n2 >>> char\n3 >>> int\n4 >>> double\n 5 >>> string\n"); 
+	printf("What kind of data do you want to push?\n\n");
+	printf("1 >>> short\n2 >>> char\n3 >>> int\n4 >>> double\n5 >>> string\n>>>"); 
 }
-
+void print_divider(void){
+	fprintf(stdout,"\n/* =========================================== */\n\n"); 	
+}
 void clean_buffer(void){
         int c;
         while((c = getchar())!= '\n' && c != EOF);
@@ -70,7 +73,7 @@ bool check_input(int* target){
     }
 }
 
-type_t* manage_options_choice(int* option){
+type_t* manage_push_options_choice(int* option){
 		type_t* ret = NULL; 
 		switch(*option){
 			case 0:

@@ -43,22 +43,24 @@ void main_loop_instructions(void);
 void push_options(void); 
 void clean_buffer(void);
 bool check_input(int* target);
-type_t* manage_options_choice(int* option);
+void print_divider(void);
+
+type_t* manage_push_options_choice(int* option);
 char* manage_string_input(size_t* len);
 
-/* Dynamic Allocation */ 
+/*============== Dynamic Allocation ================ */ 
 type_t* allocate_short(short* sh);
 type_t* allocate_char(char* ch);
 type_t* allocate_int(int* integer);
 type_t* allocate_double(double* doub);
 type_t* allocate_string(char* src_string,size_t len);
 
-/* Stack */
+/*=============== Stack ================ */
 
 void push(Stack* stackPtr, type_t value);
 void pop(Stack* stackPtr, Cache* cachePtr);
 
-/* Cache */
+/*=============== Cache ================ */
 
 void push_back(Cache* cachePtr,type_t item);
 void manage_cache_fullness(Cache* cachePtr,type_t item); 
