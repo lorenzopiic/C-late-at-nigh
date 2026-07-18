@@ -27,7 +27,7 @@ int main(void) {
 			push_options();
 			scanf("%d",&push_options_choice);		   		
             type_t* data = manage_push_options_choice(&push_options_choice); 
-           	     break;
+           	break;
         case 2:
             break;
         default:
@@ -35,7 +35,7 @@ int main(void) {
             main_loop_instructions();
             break;
         }
-             fprintf(stdout,"Insert new choice >>> ");
+            fprintf(stdout,"Insert new choice >>> ");
             fflush(stdout);
     } // end while loop() // 
     puts("Program ended!");
@@ -53,7 +53,7 @@ void main_loop_instructions(void) {
 
 void push_options(void){
 	printf("What kind of data do you want to push?\n\n");
-	printf("1 >>> short\n2 >>> char\n3 >>> int\n4 >>> double\n5 >>> string\n>>>"); 
+	printf("1 >>> short\n2 >>> char\n3 >>> int\n4 >>> double\n5 >>> string\n>>> "); 
 }
 void print_divider(void){
 	fprintf(stdout,"\n/* =========================================== */\n\n"); 	
@@ -76,41 +76,44 @@ bool check_input(int* target){
 type_t* manage_push_options_choice(int* option){
 		type_t* ret = NULL; 
 		switch(*option){
-			case 0:
+			case 1:
 				fprintf(stdout,"Enter the short >>> ");
 				short sh = 0; 
 				fscanf(stdout,"%hd",&sh); 
 				ret = allocate_short(&sh);
-			   	break;
-			case 1:	
-				fprintf(stdout,"Enter the char >>> ");
-				char ch; 
-				char buf[1000];
-            	scanf("%s", buf);
-            	if(strlen(buf) != 1){
-					while(strlen(buf) != 1){
-                     fprintf(stderr,"Error >>> Enter just one char at a time...\n");
-					 fprintf(stdout,"Enter the char >>> ");
-            		 fscanf(stdout,"%s", buf);
-					}
-				} else {
-				   	ch = buf[0];
-               }
-			   ret = allocate_char(&ch);
 			   break;
 			case 2:
+        		fprintf(stdout,"Enter the char >>> ");
+        		char ch;
+        		char buf[1000];
+        
+        		scanf("%999s", buf); // BUFFER OVERFLOW PROTECTION // 
+        
+        	while(strlen(buf) != 1){
+            	fprintf(stderr,"Error >>> Enter just one char at a time...\n");
+            	fprintf(stdout,"Enter the char >>> ");
+            	fscanf(stdin, "%999s", buf); 
+        	}
+        
+       		 if(strlen(buf) == 1){
+            	ch = buf[0];
+        		}
+
+       			 ret = allocate_char(&ch);
+        		break;
+			case 3:
 				fprintf(stdout,"Enter the int >>> ");
 			   	int integer = 0;
 				fscanf(stdout,"%d",&integer);
 			   	ret = allocate_int(&integer);
 				break;
-			case 3:
+			case 4:
 				fprintf(stdout,"Enter the int >>> ");
 				double doub; 
 				fscanf(stdout,"%lf", &doub);
 				ret = allocate_double(&doub); 	
 				break;
-			case 4:
+			case 5:
 				size_t string_lenght = 0;  
 				char* string = manage_string_input(&string_lenght);
 				 ret = allocate_string(string,string_lenght);
@@ -386,3 +389,10 @@ void set_cache_bottom(Cache* cachePtr){
 	previous = NULL; 
 	current  = NULL; 
 }
+
+
+
+
+
+
+
