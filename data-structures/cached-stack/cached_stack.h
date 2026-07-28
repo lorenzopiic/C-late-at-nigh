@@ -45,6 +45,7 @@ void clean_buffer(void);
 bool check_input(int* target);
 void print_divider(void);
 
+bool check_push_options_choice(int* choice); // pointer to the push options choice // 
 type_t* manage_push_options_choice(int* option);
 char* manage_string_input(size_t* len);
 

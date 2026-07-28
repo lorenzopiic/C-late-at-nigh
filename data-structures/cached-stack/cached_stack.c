@@ -22,16 +22,30 @@ int main(void) {
       }
 	if(instructions_choice == 3 ) { break; }
       switch (instructions_choice) {
-        case 1:
-			print_divider();
-			push_options();
-			scanf("%d",&push_options_choice);		   		
+			case 1:
+            print_divider();
+            push_options();
+            printf(">>> ");
+
+            while (1) {
+                if (!check_input(&push_options_choice)) {
+                    fprintf(stderr, "\nError! You entered characters instead of a number!\n");
+                } else if (!check_push_options_choice(&push_options_choice)) {
+                    fprintf(stderr, "\nError! You entered an invalid choice!\n");
+                } else {
+                    break; 
+                }
+                print_divider();
+                push_options();
+                fprintf(stdout,"\nEnter a valid choice now >>> ");
+            }
+			// Ok, now we are sure that the choice of what to push is a number between 1-5 //
             type_t* data = manage_push_options_choice(&push_options_choice); 
-			break;
+            break;
         case 2:
             break;
         default:
-            printf("\nError >>> Ivalid choice...\n\n");
+            printf("\nError! Invalid choice...\n\n");
             main_loop_instructions();
             break;
         }
@@ -53,7 +67,7 @@ void main_loop_instructions(void) {
 
 void push_options(void){
 	printf("What kind of data do you want to push?\n\n");
-	printf("1 >>> short\n2 >>> char\n3 >>> int\n4 >>> double\n5 >>> string\n>>> ");
+	printf("1 >>> short\n2 >>> char\n3 >>> int\n4 >>> double\n5 >>> string\n");
 }
 void print_divider(void){
 	fprintf(stdout,"\n\n/* =========================================== */\n\n"); 	
@@ -73,6 +87,19 @@ bool check_input(int* target){
     }
 }
 
+bool check_push_options_choice(int* choice){
+	switch(*choice){
+		case 1:
+		case 2:
+		case 3: 
+		case 4: 
+		case 5:
+			return true; 
+		default:
+			return false; 
+	}
+}
+
 type_t* manage_push_options_choice(int* option){
 		type_t* ret = NULL; 
 		switch(*option){
@@ -90,7 +117,7 @@ type_t* manage_push_options_choice(int* option){
         		char ch; 
 				char buf[1000];
         
-        		scanf("%999s", buf); // BUFFER OVERFLOW PROTECTION // 
+        		fscanf(stdin,"%999s", buf); // BUFFER OVERFLOW PROTECTION // 
         
         	while(strlen(buf) != 1){
             	fprintf(stderr,"Error >>> Enter just one char at a time...\n");
