@@ -17,7 +17,7 @@ int main(void) {
     printf(">>> ");
 	while(1){
 		if(!check_input(&instructions_choice)){
-		fprintf(stderr,"Please, enter a number >>> ");
+		fprintf(stderr,"\nPlease, enter a number >>> ");
         continue;
       }
 	if(instructions_choice == 3 ) { break; }
@@ -27,11 +27,11 @@ int main(void) {
 			push_options();
 			scanf("%d",&push_options_choice);		   		
             type_t* data = manage_push_options_choice(&push_options_choice); 
-           	break;
+			break;
         case 2:
             break;
         default:
-            printf("Ivalid choice...\n");
+            printf("\nError >>> Ivalid choice...\n\n");
             main_loop_instructions();
             break;
         }
@@ -45,7 +45,7 @@ int main(void) {
 
 
 void main_loop_instructions(void) {
-    printf("Enter your choice\n");
+    printf("Enter your choice:\n");
     printf("1 to push an element into the stack\n");
     printf("2 to pop an element from the stack\n");
     printf("3 to end the program\n");
@@ -53,10 +53,10 @@ void main_loop_instructions(void) {
 
 void push_options(void){
 	printf("What kind of data do you want to push?\n\n");
-	printf("1 >>> short\n2 >>> char\n3 >>> int\n4 >>> double\n5 >>> string\n>>> "); 
+	printf("1 >>> short\n2 >>> char\n3 >>> int\n4 >>> double\n5 >>> string\n>>> ");
 }
 void print_divider(void){
-	fprintf(stdout,"\n/* =========================================== */\n\n"); 	
+	fprintf(stdout,"\n\n/* =========================================== */\n\n"); 	
 }
 void clean_buffer(void){
         int c;
@@ -77,15 +77,18 @@ type_t* manage_push_options_choice(int* option){
 		type_t* ret = NULL; 
 		switch(*option){
 			case 1:
+        		printf("\n");    
 				fprintf(stdout,"Enter the short >>> ");
-				short sh = 0; 
-				fscanf(stdout,"%hd",&sh); 
+				short sh; 
+				fscanf(stdin,"%hd",&sh);
+			   	fprintf(stdout,"debugging >>> read %hd", sh);	
 				ret = allocate_short(&sh);
 			   break;
 			case 2:
+        		printf("\n");    
         		fprintf(stdout,"Enter the char >>> ");
-        		char ch;
-        		char buf[1000];
+        		char ch; 
+				char buf[1000];
         
         		scanf("%999s", buf); // BUFFER OVERFLOW PROTECTION // 
         
@@ -102,27 +105,30 @@ type_t* manage_push_options_choice(int* option){
        			 ret = allocate_char(&ch);
         		break;
 			case 3:
+        		printf("\n");    
 				fprintf(stdout,"Enter the int >>> ");
 			   	int integer = 0;
-				fscanf(stdout,"%d",&integer);
+				fscanf(stdin,"%d",&integer);
 			   	ret = allocate_int(&integer);
 				break;
 			case 4:
-				fprintf(stdout,"Enter the int >>> ");
+        		printf("\n");    
+				fprintf(stdout,"Enter the double >>> ");
 				double doub; 
-				fscanf(stdout,"%lf", &doub);
+				fscanf(stdin,"%lf", &doub);
 				ret = allocate_double(&doub); 	
 				break;
 			case 5:
+        		printf("\n");    
 				size_t string_lenght = 0;  
 				char* string = manage_string_input(&string_lenght);
 				 ret = allocate_string(string,string_lenght);
 				break; 				
 			} // end switch //
 		
-	return ret; 
+	print_divider(); 	
+	return ret;
 }
-
 type_t* allocate_short(short* sh) {
 	type_t* ret = malloc(sizeof(*ret));
 	if(ret != NULL){
