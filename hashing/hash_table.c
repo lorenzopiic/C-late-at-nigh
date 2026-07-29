@@ -5,8 +5,7 @@
 #include<string.h>
 
 
-int main(void)
-{
+int main(void){
 
     hashtable* ht = create_table();
     delete_hash_table(ht);

@@ -31,7 +31,8 @@ int main(void) {
                 if (!check_input(&push_options_choice)) {
                     fprintf(stderr, "\nError! You entered characters instead of a number!\n");
                 } else if (!check_push_options_choice(&push_options_choice)) {
-                    fprintf(stderr, "\nError! You entered an invalid choice!\n");
+                    // not betweeen 1-5 // 
+					fprintf(stderr, "\nError! You entered an invalid choice!\n");
                 } else {
                     break; 
                 }
