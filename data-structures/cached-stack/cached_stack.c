@@ -5,6 +5,8 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+#include<limits.h>
+#include<errno.h>
 #include"cached_stack.h"
 
 int main(void) {
@@ -73,19 +75,30 @@ void push_options(void){
 void print_divider(void){
 	fprintf(stdout,"\n\n/* =========================================== */\n\n"); 	
 }
+
+
 void clean_buffer(void){
         int c;
         while((c = getchar())!= '\n' && c != EOF);
 }
 
-bool check_input(int* target){
-    int check = fscanf(stdin, "%d", target);
-    if (check == 1) {
-        return true;
-    } else {
-        clean_buffer();
-        return false;
+
+bool check_input(int* target) {
+  
+  	char buffer[128];
+    if (fgets(buffer, sizeof(buffer), stdin) == NULL) { return false; }
+
+    char* endptr;
+    errno = 0;
+    long val = strtol(buffer, &endptr, 10);
+
+    if (endptr == buffer || (*endptr != '\n' && *endptr != '\0') || errno == ERANGE) {
+	  	return false; 
     }
+
+    if (val < INT_MIN || val > INT_MAX) { return false; }
+    *target = (int)val;
+    return true;
 }
 
 bool check_push_options_choice(int* choice){
@@ -106,10 +119,12 @@ type_t* manage_push_options_choice(int* option){
 		switch(*option){
 			case 1:
         		printf("\n");    
-				fprintf(stdout,"Enter the short >>> ");
-				short sh; 
-				fscanf(stdin,"%hd",&sh);
-			   	fprintf(stdout,"debugging >>> read %hd", sh);	
+				short sh;	
+				while(1){
+					fprintf(stdout,"Enter the short >>> ");
+					if(check_input_short(&sh)){  break; }
+					fprintf(stderr,"\nError >>> Invalid short format (no chars, decimals or overflow)\n\n"); 
+				}
 				ret = allocate_short(&sh);
 			   break;
 			case 2:
@@ -157,6 +172,25 @@ type_t* manage_push_options_choice(int* option){
 	print_divider(); 	
 	return ret;
 }
+bool check_input_short(short* target){
+
+	char buffer[128];
+    if (fgets(buffer, sizeof(buffer), stdin) == NULL) { return false; }
+
+    char* endptr;
+    errno = 0;
+    long val = strtol(buffer, &endptr, 10);
+
+    if (endptr == buffer || (*endptr != '\n' && *endptr != '\0') || errno == ERANGE) {
+        return false; 
+	}
+
+    if (val < SHRT_MIN || val > SHRT_MAX) { return false; }
+
+    *target = (short)val;
+    return true;
+}
+
 type_t* allocate_short(short* sh) {
 	type_t* ret = malloc(sizeof(*ret));
 	if(ret != NULL){
