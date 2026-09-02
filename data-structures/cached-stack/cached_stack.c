@@ -1,5 +1,5 @@
 /* Implemenation of a generic "cached" stack data structure. 
- * For fun and for stydying the "tagged union" technique.
+* For fun and for stydying the "tagged union" technique.
  * Copyright (C) Lorenzo Tomasello 2026                      */
 
 #include<stdio.h>
@@ -7,28 +7,37 @@
 #include<ctype.h>
 #include<stdlib.h>
 #include<limits.h>
+#include<float.h>
 #include<errno.h>
 #include"cached_stack.h"
 
-int main(void) {
+int 
+main(void) 
+{
     Stack* STACK = NULL; 
 	Cache* CACHE = NULL; 
-    
-	int instructions_choice;
+
+/* <<instruction_choice>> is for them main menu management
+ * to handle the first step of the program 	*/
+	int instruction_choice; 
+	
+/* <<push_options_choice>> is used to manage the choice of data type to push*/
 	int push_options_choice; 
-   	main_loop_instructions();
-    printf(">>> ");
-	while(1){
+
+	main_loop_instructions(); /* Dipslays the general menu of the program */
+    
+	printf(">>> ");
+	while(1){ /* See check_input */
 		if(!check_input(&instructions_choice)){
 		fprintf(stderr,"\nPlease, enter a number >>> ");
         continue;
       }
 	if(instructions_choice == 3 ) { break; }
       switch (instructions_choice) {
-			case 1:
-            print_divider();
-            push_options();
-            printf(">>> ");
+        case 1:
+             print_divider();
+             push_options(); /* Displays the data types supported by the data structure */
+             printf(">>> ");
 
             while (1) {
                 if (!check_input(&push_options_choice)) {
@@ -45,7 +54,21 @@ int main(void) {
             }
 			// Ok, now we are sure that the choice of what to push is a number between 1-5 //
             type_t* data = manage_push_options_choice(&push_options_choice); 
-            break;
+
+/* DESCRIPTION:
+   
+   "type_t"
+   
+   type_t: This struct represents the data type abstraction that we want to push into the data structure;
+   essentially inside it there is:
+  
+    - a "union" containing the data types that I have prepared for the program and then,
+    - an "enum" that reports the tags of the various types
+   
+   so that we can make the wrappers that actually allocate the data in the heap work
+
+*/
+         break;
         case 2:
             break;
         default:
@@ -73,9 +96,7 @@ void push_options(void){
 	printf("What kind of data do you want to push?\n\n");
 	printf("1 >>> char\n2 >>> short\n3 >>> int\n4 >>> double\n5 >>> string\n");
 }
-void print_divider(void){
-	fprintf(stdout,"\n\n/* =========================================== */\n\n"); 	
-}
+void print_divider(void){ fprintf(stdout,"\n\n/* =========================================== */\n\n"); }
 
 
 void clean_buffer(void){
@@ -83,7 +104,15 @@ void clean_buffer(void){
         while((c = getchar())!= '\n' && c != EOF);
 }
 
-
+/* DESCRIPTION:
+  
+  "check_input()" 
+ 
+  This function performs an initial check on the input provided by the user when selecting the operation
+  for the program to execute. If the user enters "characters" or "floating-point numbers", the function 
+  returns an error, and the loop prompts the user to enter a valid choice again.
+ 
+  */
 bool check_input(int* target) {
   
   	char buffer[128];
@@ -102,6 +131,13 @@ bool check_input(int* target) {
     return true;
 }
 
+/*  DESCRIPTION: 
+   
+    "check_push_options_choice()"
+   
+    This function checks whether the integer entered by the user is between 1 and 5; if this check fails, the foo
+    returns an error and this time the loop prompts you to enter a valid option until the latter is provided.
+*/ 
 bool check_push_options_choice(int* choice){
 	switch(*choice){
 		case 1:
@@ -153,6 +189,7 @@ type_t* manage_push_options_choice(int* option){
 				while(1){
 					fprintf(stdout,"Enter the short >>> ");
 					if(check_input_short(&sh)){  break; }
+					
 					fprintf(stderr,"\nError >>> Invalid short format");
 					fprintf(stderr,"(no chars, decimals or overflow)\n\n"); 
 				}
@@ -163,25 +200,33 @@ type_t* manage_push_options_choice(int* option){
         		printf("\n");    
 			   	int integer;
 				while(1){
-				fprintf(stdout,"Enter the int >>> ");
+					fprintf(stdout,"Enter the int >>> ");
 				if(check_input_int(&integer)) { break; }				
-					fprintf(stderr,"\nError >>> invalid int format)"); 
-					fprintf(stderr,"(no chars, decimals or overflow)");
+				
+					fprintf(stderr,"\nError >>> invalid int format "); 
+					fprintf(stderr,"(no chars, decimals or overflow)\n\n");
 				}
 			   	ret = allocate_int(&integer);
 				break;
 			}
 			case 4:
         		printf("\n");    
-				fprintf(stdout,"Enter the double >>> ");
 				double doub; 
+				while(1){
+					fprintf(stdout,"Enter the double >>> ");
+					if(check_input_double(&doub)) { break; }
+					
+					fprintf(stderr,"\nError >>> invalid double format)"); 
+					fprintf(stderr,"(no chars or overflow)\n\n");
+
+				}
 				fscanf(stdin,"%lf", &doub);
 				ret = allocate_double(&doub); 	
 				break;
 			case 5:
         		printf("\n");    
 				size_t string_lenght = 0;  
-				char* string = manage_string_input(&string_lenght);
+				char* string = check_input_string(&string_lenght);
 				 ret = allocate_string(string,string_lenght);
 				break; 				
 			} // end switch //
@@ -222,9 +267,32 @@ bool check_input_int(int* target){
 	   ( *endptr != '\n'   &&
 	  	 *endptr != '\0')  ||
 	   	 errno == ERANGE)  { return false; }
+    
+	if ( val < INT_MIN || 
+		 val > INT_MAX)   { return false; }
+	
 	*target = (int)val; 
-
 	return true; // safe //
+}
+
+bool check_input_double(double* target){
+	
+	char buffer[1200];
+	if(fgets(buffer, sizeof(buffer), stdin) == NULL ) { return false; }
+	char* endptr; 
+	errno = 0; 
+	long val = strtol(buffer, &endptr, 10);
+
+	if ( endptr  == buffer || 
+	   ( *endptr != '\n'   &&
+	  	 *endptr != '\0')  ||
+	   	 errno == ERANGE)  { return false; }
+    
+	if ( val < DBL_MIN || 
+		 val > DBL_MAX)   { return false; }
+	
+	*target = (double)val; 
+	return true; // safe // 
 }
 
 type_t* allocate_short(short* sh) {
@@ -499,4 +567,13 @@ void set_cache_bottom(Cache* cachePtr){
 
 
 
-
+/*======================= TO DO ===========================
+ *
+ *	Fix the check_input_char function, it is different from
+ *  the other foos that I wrote for the same task
+ *
+ *
+ *
+ *
+ *
+ * */
